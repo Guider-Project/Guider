@@ -1,14 +1,22 @@
-import { Navbar, NavbarBrand, NavbarContent, NavbarItem, Link, Button } from "@nextui-org/react";
+import { Navbar, NavbarBrand, NavbarContent, NavbarItem, Link } from "@nextui-org/react";
 
 export default function NavBar({ active }) {
   return (
     <Navbar>
       <NavbarBrand>
-        <p className="font-bold text-inherit">Guider</p>
+        <Link color="foreground" href="/">
+          <img
+            src="/images/logo.png"
+            alt="Guider logo"
+            style={{
+              height: "60px",
+            }}
+          />
+        </Link>
       </NavbarBrand>
       <NavbarContent className="hidden sm:flex gap-8" justify="end">
         <NavbarItem isActive={active === "home"}>
-          <Link color={`${active === "home" ? "primary" : "foreground"}`} href="#">
+          <Link color={`${active === "home" ? "primary" : "foreground"}`} href="/">
             Home
           </Link>
         </NavbarItem>

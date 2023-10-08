@@ -31,11 +31,20 @@ export default function Hero() {
   ];
 
   const [from, setFrom] = useState(items[0].label);
-  const [to, setTo] = useState("");
+  const [to, setTo] = useState(items[1].label);
   const [date, setDate] = useState("");
 
-  const onSelectFrom = (item) => {
-    setFrom(item.label);
+  useEffect(() => {
+    const today = new Date();
+    const day = today.getDate();
+    const month = today.getMonth() + 1;
+    const year = today.getFullYear();
+
+    setDate(`${year}-${month}-${day}`);
+  }, []);
+
+  const handleSearch = () => {
+    console.log(from, to, date);
   };
 
   return (
@@ -49,7 +58,7 @@ export default function Hero() {
             <div className="absolute inset-0 flex items-center mx-[5vw]">
               <div className="flex flex-col">
                 <div className="text-3xl font-bold text-black">Welcome to</div>
-                <div className="text-[80px] text-primary">Guider</div>
+                <div className="text-[80px] text-mainColour">Guider</div>
                 <div className="text-[15px] text-black">Find your own way with your Guider</div>
               </div>
             </div>
@@ -58,74 +67,79 @@ export default function Hero() {
 
         <div className="absolute bottom-[0px] w-full">
           <div className="flex flex-row justify-center">
-            <div className="flex w-[50%] h-[300px] bg-primary bg-opacity-50 rounded-3xl backdrop-blur">
-              <div className="flex flex-col items-center justify-center w-1/3 p-5 bg-primary text-white text-[20px] font-bold rounded-tl-3xl rounded-bl-3xl rounded-tr-[100px]">
-                Online Seat Reservation
+            <div className="flex w-[50%] bg-mainColour bg-opacity-50 rounded-3xl backdrop-blur">
+              <div className="flex flex-col items-center justify-center w-1/3 p-5 bg-mainColour text-white text-[20px] font-bold rounded-tl-3xl rounded-bl-3xl rounded-tr-[100px]">
+                Search Bus Time Table
               </div>
 
-              <div className="flex flex-col items-center gap-3 justify-center w-2/3 px-10">
-                <div className="flex gap-3 w-full">
+              <div className="flex flex-col gap-3 py-10 px-10">
+                <div className="grid grid-cols-6 items-center gap-4 justify-center">
                   <div className="flex flex-col justify-center text-white w-[70px]">FROM:</div>
+                  <div className="col-span-4">
+                    <Input type="text" value={from} disabled />
+                  </div>
+                  <div className="h-full">
+                    <Dropdown>
+                      <DropdownTrigger className="h-full">
+                        <Button variant="" className="bg-white text-black">
+                          Select
+                        </Button>
+                      </DropdownTrigger>
 
-                  <Input type="text" label={from} disabled />
-                  <Dropdown>
-                    <DropdownTrigger className="h-full">
-                      <Button variant="" className="bg-white text-black">
-                        Select
-                      </Button>
-                    </DropdownTrigger>
+                      <DropdownMenu aria-label="Dynamic Actions" items={items}>
+                        {(item) => (
+                          <DropdownItem
+                            key={item.key}
+                            color={item.key === "delete" ? "danger" : "default"}
+                            className={item.key === "delete" ? "text-danger" : ""}
+                            onClick={() => setFrom(item.label)}
+                          >
+                            {item.label}
+                          </DropdownItem>
+                        )}
+                      </DropdownMenu>
+                    </Dropdown>
+                  </div>
 
-                    <DropdownMenu aria-label="Dynamic Actions" items={items}>
-                      {(item) => (
-                        <DropdownItem
-                          key={item.key}
-                          color={item.key === "delete" ? "danger" : "default"}
-                          className={item.key === "delete" ? "text-danger" : ""}
-                          onClick={() => onSelectFrom(item)}
-                        >
-                          {item.label}
-                        </DropdownItem>
-                      )}
-                    </DropdownMenu>
-                  </Dropdown>
-                </div>
-
-                <div className="flex gap-3 w-full">
                   <div className="flex flex-col justify-center text-white w-[70px]">TO:</div>
+                  <div className="col-span-4">
+                    <Input type="text" value={to} disabled />
+                  </div>
+                  <div className="h-full">
+                    <Dropdown>
+                      <DropdownTrigger className="h-full">
+                        <Button variant="" className="bg-white text-black">
+                          Select
+                        </Button>
+                      </DropdownTrigger>
 
-                  <Input type="text" label={from} disabled />
+                      <DropdownMenu aria-label="Dynamic Actions" items={items}>
+                        {(item) => (
+                          <DropdownItem key={item.key} onClick={() => setTo(item.label)}>
+                            {item.label}
+                          </DropdownItem>
+                        )}
+                      </DropdownMenu>
+                    </Dropdown>
+                  </div>
 
-                  <Dropdown>
-                    <DropdownTrigger className="h-full">
-                      <Button variant="" className="bg-white text-black">
-                        Select
-                      </Button>
-                    </DropdownTrigger>
-
-                    <DropdownMenu aria-label="Dynamic Actions" items={items}>
-                      {(item) => (
-                        <DropdownItem
-                          key={item.key}
-                          color={item.key === "delete" ? "danger" : "default"}
-                          className={item.key === "delete" ? "text-danger" : ""}
-                          onClick={() => onSelectFrom(item)}
-                        >
-                          {item.label}
-                        </DropdownItem>
-                      )}
-                    </DropdownMenu>
-                  </Dropdown>
-                </div>
-
-                <div className="flex gap-3 w-full">
                   <div className="flex flex-col justify-center text-white w-[57px]">DATE:</div>
-                  <Input
-                    type="date"
-                    label={date}
-                    onChange={(e) => {
-                      setDate(e.target.value);
-                    }}
-                  />
+                  <div className="col-span-5">
+                    <Input
+                      type="date"
+                      value={date}
+                      onChange={(e) => {
+                        setDate(e.target.value);
+                      }}
+                    />
+                  </div>
+
+                  <div></div>
+                  <div className="col-span-5">
+                    <Button className="w-full" color="primary" onClick={handleSearch}>
+                      Search
+                    </Button>
+                  </div>
                 </div>
               </div>
             </div>
