@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { Input, Button } from "@nextui-org/react";
+import { signIn } from "next-auth/react";
 
 export default function Form() {
   const [email, setEmail] = useState("");
@@ -20,13 +21,21 @@ export default function Form() {
     setPassword(e.target.value);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
     const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
 
     if (!emailRegex.test(email)) {
       setInvalidEmail(true);
       return;
     }
+
+    await signIn("credentials", {
+      email: email.toLowerCase(),
+      password: password,
+      redirect: false,
+    });
 
     console.log();
   };
