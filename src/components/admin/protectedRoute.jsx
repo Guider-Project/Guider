@@ -1,24 +1,24 @@
 "use client";
 
-import { useSession } from "next-auth/react";
 import { useEffect } from "react";
+import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
-
-import NavBar from "@/components/common/navbar";
-import Form from "@/components/admin/form";
-
-export default function Admin() {
+export default function ProtectedRoute({ children }) {
   const router = useRouter();
   const { data: session, status } = useSession();
 
   useEffect(() => {
+    const path = window.location.pathname;
+
+    if (path === "/admin") return;
     if (status === "loading") return;
-    if (status === "authenticated") router.push("/admin/dashboard");
-  }, [session, status, router]);
+    if (!session) {
+      router.push("/admin");
+    }
+  }, [router, session, status]);
 
   return (
     <>
-      <NavBar />
       {status === "loading" ? (
         <div className="flex items-center justify-center h-screen">
           <div className="flex flex-col items-center justify-center">
@@ -29,7 +29,7 @@ export default function Admin() {
           </div>
         </div>
       ) : (
-        <Form />
+        <>{children}</>
       )}
     </>
   );

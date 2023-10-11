@@ -2,7 +2,12 @@ export default function Footer() {
   return (
     <footer className="bg-gray-800 mt-24 w-full">
       <div className="flex px-10 py-24">
-        <div className="w-1/6"></div>
+        <div className="w-1/6">
+          <img
+            src="/images/logo.png"
+            alt="Guider logo"
+          />
+        </div>
         <div className="w-5/6 grid grid-cols-4 text-white">
           <div className="flex flex-col gap-2">
             <div>Home</div>
