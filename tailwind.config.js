@@ -13,6 +13,10 @@ module.exports = {
       backgroundImage: {
         bus: "url('/bus.jpg')",
       },
+
+      colors: {
+        primary: "#0891b2",
+      },
     },
   },
   darkMode: "class",

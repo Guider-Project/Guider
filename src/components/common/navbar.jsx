@@ -1,4 +1,5 @@
-import { Navbar, NavbarBrand, NavbarContent, NavbarItem, Link } from "@nextui-org/react";
+import Link from "next/link";
+import { Navbar, NavbarBrand, NavbarContent, NavbarItem } from "@nextui-org/react";
 
 export default function NavBar() {
   return (
@@ -7,7 +8,7 @@ export default function NavBar() {
         <p className="font-bold text-inherit">Guider</p>
       </NavbarBrand>
       <NavbarContent className="hidden sm:flex gap-4" justify="end">
-        <NavbarItem isActive>
+        <NavbarItem className="text-primary" isActive>
           <Link href="/">Home</Link>
         </NavbarItem>
         <NavbarItem>

@@ -1,7 +1,7 @@
 export default function About() {
   return (
     <>
-      <div className="flex flex-col h-[400px] py-10 px-24">
+      <div className="flex flex-col h-[400px] py-10 pt-16 px-24 bg-white">
         <div className="font-bold text-[40px]">About</div>
         <div className="text-[16px] grid grid-cols-2 gap-16 mt-5">
           <div className="text-justify leading-7">
