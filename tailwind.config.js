@@ -11,8 +11,11 @@ module.exports = {
   theme: {
     extend: {
       backgroundImage: {
-        bus: "url('/bus.jpg')",
+        homepageBus: "url('/homepage/bus.jpg')",
         aboutBus: "url('/about/bus.jpg')",
+        complainsBus: "url('/complains/bus.jpg')",
+        newsBus: "url('/news/bus.jpg')",
+        privacyBus: "url('/privacy/bus.jpg')",
         trackingBus: "url('/tracking/bus.jpg')",
       },
 

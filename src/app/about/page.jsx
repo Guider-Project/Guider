@@ -1,15 +1,17 @@
 import NavBar from "@/components/common/navbar";
+import Hero from "@/components/common/hero";
 import Footer from "@/components/common/footer";
 
-import Hero from "@/components/about/hero";
 import AboutContent from "@/components/about/content";
 
 export default function About() {
   return (
     <>
-      <NavBar />
-      <Hero />
+      <NavBar activeTab="about" />
+
+      <Hero background={"bg-aboutBus"} title={"About us"} />
       <AboutContent />
+
       <Footer />
     </>
   );
