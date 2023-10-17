@@ -12,6 +12,8 @@ module.exports = {
     extend: {
       backgroundImage: {
         bus: "url('/bus.jpg')",
+        aboutBus: "url('/about/bus.jpg')",
+        trackingBus: "url('/tracking/bus.jpg')",
       },
 
       colors: {
