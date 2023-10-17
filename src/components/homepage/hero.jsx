@@ -3,7 +3,7 @@ import { Card, CardBody, CardHeader, Button } from "@nextui-org/react";
 export default function Hero() {
   return (
     <>
-      <div className="flex flex-col h-[660px] py-10 px-24">
+      <div className="flex flex-col h-[630px] py-10 px-24">
         <div className="flex w-full">
           <div className="w-3/5 flex flex-col justify-center">
             <div className="font-bold text-[80px]">Guider</div>
