@@ -51,7 +51,7 @@ export default function Footer() {
                 <ul className="text-gray-400 font-medium">
                   <li className="mb-2">
                     <a href="mailto:guider.express@gmail.com" className="hover:underline ">
-                      guider@gmail.com
+                    expressway.guider@gmail.com
                     </a>
                   </li>
                   <li className="mb-2">Whatsapp</li>
