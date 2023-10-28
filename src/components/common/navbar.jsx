@@ -1,7 +1,11 @@
-import Link from "next/link";
-import { Navbar, NavbarBrand, NavbarContent, NavbarItem } from "@nextui-org/react";
+"use client";
+
+import { Navbar, NavbarBrand, NavbarContent, NavbarItem, Button, Avatar } from "@nextui-org/react";
+import { useSession, signOut } from "next-auth/react";
 
 export default function NavBar({ activeTab }) {
+  const { status } = useSession();
+
   return (
     <Navbar maxWidth="full" className="h-[60px] px-24 shadow-lg" isBordered>
       <NavbarBrand>
@@ -49,6 +53,46 @@ export default function NavBar({ activeTab }) {
         >
           <a href="/about">About us</a>
         </NavbarItem>
+
+        {status !== "authenticated" ? (
+          <>
+            <NavbarItem>
+              <a href="/signin">
+                <Button auto size="small" color="success" className="font-semibold">
+                  Sign in
+                </Button>
+              </a>
+            </NavbarItem>
+
+            <NavbarItem>
+              <a href="/signup">
+                <Button auto size="small" color="success" className="font-semibold">
+                  Sign up
+                </Button>
+              </a>
+            </NavbarItem>
+          </>
+        ) : (
+          <NavbarItem>
+            <div className="flex gap-5">
+              <Avatar
+                src="https://cdn.iconscout.com/icon/free/png-512/free-avatar-370-456322.png"
+                size="small"
+                className="cursor-pointer"
+              />
+
+              <Button
+                auto
+                size="small"
+                color="success"
+                className="font-semibold"
+                onClick={() => signOut()}
+              >
+                Sign out
+              </Button>
+            </div>
+          </NavbarItem>
+        )}
       </NavbarContent>
     </Navbar>
   );
