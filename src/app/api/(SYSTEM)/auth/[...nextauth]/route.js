@@ -28,6 +28,7 @@ export const authOptions = {
 
           const users = await User.find({ email: email.toLowerCase() });
           const user = users[0];
+
           if (!user) return null;
           return user;
         } else {
@@ -53,18 +54,23 @@ export const authOptions = {
   },
 
   callbacks: {
-    async jwt({ token, account }) {
-      if (account) {
-        token.provider = account.provider;
-      }
+    async jwt({ token, account, user }) {
+      if (account) token.provider = account.provider;
+
       return token;
+    },
+
+    async session({ session, token }) {
+      session.data = token;
+      return session;
     },
   },
 
   pages: {
     signIn: "/signin",
+    signUp: "/signup",
     signOut: "/",
-    error: "/signup",
+    error: "/",
   },
 };
 
