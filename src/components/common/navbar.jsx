@@ -81,6 +81,12 @@ export default function NavBar({ activeTab }) {
                 className="cursor-pointer"
               />
 
+              <a href="/settings">
+                <Button auto size="small" color="success" className="font-semibold">
+                  Settings
+                </Button>
+              </a>
+
               <Button
                 auto
                 size="small"

@@ -100,8 +100,8 @@ export default function SignUp() {
                     />
                   </div>
                   <div>
-                    <label htmlFor="password" className="block mb-2 text-sm font-medium text-white">
-                      Role
+                    <label htmlFor="role" className="block mb-2 text-sm font-medium text-white">
+                      What you need to do?
                     </label>
                     <select
                       name="role"
@@ -109,9 +109,8 @@ export default function SignUp() {
                       required
                       className="bg-gray-700 border border-gray-600 placeholder-gray-400 text-white rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                     >
-                      <option value="user">User</option>
-                      <option value="user">Bus Owner</option>
-                      <option value="admin">Admin</option>
+                      <option value="client">Make a Booking</option>
+                      <option value="bus">Register a Bus</option>
                     </select>
                   </div>
                   <button
