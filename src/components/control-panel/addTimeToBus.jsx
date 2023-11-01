@@ -24,6 +24,7 @@ export default function AddTimeToBus({ busses, isOpen, onClose, onOpenChange, on
   const [busName, setBusName] = useState("");
   const [from, setFrom] = useState("");
   const [to, setTo] = useState("");
+  const [price, setPrice] = useState(0);
   const [startTime, setStartTime] = useState("");
   const [endTime, setEndTime] = useState("");
 
@@ -46,6 +47,8 @@ export default function AddTimeToBus({ busses, isOpen, onClose, onOpenChange, on
 
       if (from === to) return toast.error("From and To cannot be the same");
 
+      if (price < 0) return toast.error("Price cannot be negative");
+
       const fixedStartTime = parseInt(startTime.split(":").join(""));
       const fixedEndTime = parseInt(endTime.split(":").join(""));
 
@@ -56,6 +59,7 @@ export default function AddTimeToBus({ busses, isOpen, onClose, onOpenChange, on
         bus,
         from,
         to,
+        price,
         startTime,
         endTime,
       };
@@ -74,6 +78,7 @@ export default function AddTimeToBus({ busses, isOpen, onClose, onOpenChange, on
       setBusName("");
       setFrom("");
       setTo("");
+      setPrice(0);
       setStartTime("");
       setEndTime("");
     } catch (error) {
@@ -167,6 +172,19 @@ export default function AddTimeToBus({ busses, isOpen, onClose, onOpenChange, on
                       ))}
                     </DropdownMenu>
                   </Dropdown>
+                </div>
+
+                <div className="flex flex-col gap-2">
+                  <div className="">Price</div>
+                  <Input
+                    key="outside-left"
+                    type="number"
+                    variant="bordered"
+                    className="w-[400px]"
+                    value={price}
+                    onChange={(e) => setPrice(e.target.value)}
+                    startContent={"Rs."}
+                  />
                 </div>
 
                 <div className="flex flex-col gap-2">

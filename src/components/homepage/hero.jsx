@@ -1,6 +1,28 @@
+"use client";
+
+import axios from "axios";
+import { useState, useEffect } from "react";
 import { Card, CardBody, CardHeader, Button } from "@nextui-org/react";
 
 export default function Hero() {
+  const [busses, setBusses] = useState([]);
+  const [journeys, setJourneys] = useState([]);
+  const [reservations, setReservations] = useState([]);
+  const [transactions, setTransactions] = useState([]);
+
+  useEffect(() => {
+    async function getBusses() {
+      try {
+        const { data } = await axios.get("/api/busses");
+        setBusses(data);
+      } catch (error) {
+        console.log(error);
+      }
+    }
+
+    getBusses();
+  }, []);
+
   return (
     <>
       <div className="flex flex-col h-[630px] py-10 px-24">
@@ -19,19 +41,22 @@ export default function Hero() {
               <CardBody className="py-5 px-8">
                 <div className="grid grid-cols-4 gap-4 font-bold">
                   <div className="flex flex-col items-center bg-primary text-white rounded-2xl py-2 text-[25px]">
-                    10+ <br /> <span className="text-xs font-normal">Total buses</span>
+                    {busses.length}
+                    <br /> <span className="text-xs font-normal">Total buses</span>
                   </div>
 
                   <div className="flex flex-col items-center bg-primary text-white rounded-2xl py-2 text-[25px]">
-                    250+ <br /> <span className="text-xs font-normal">Journeys</span>
+                    {journeys.length} <br /> <span className="text-xs font-normal">Journeys</span>
                   </div>
 
                   <div className="flex flex-col items-center bg-primary text-white rounded-2xl py-2 text-[25px]">
-                    5k+ <br /> <span className="text-xs font-normal">Reservations</span>
+                    {reservations.length} <br />{" "}
+                    <span className="text-xs font-normal">Reservations</span>
                   </div>
 
                   <div className="flex flex-col items-center bg-primary text-white rounded-2xl py-2 text-[25px]">
-                    Rs.50k+ <br /> <span className="text-xs font-normal">Transactions</span>
+                    {transactions.length} <br />{" "}
+                    <span className="text-xs font-normal">Transactions</span>
                   </div>
                 </div>
               </CardBody>

@@ -8,6 +8,7 @@ export default function Footer() {
           <div className="md:flex md:justify-between">
             <div className="mb-6">
               <span className="self-center text-2xl font-semibold whitespace-nowrap">
+                <img src="/logo/Guider_white.png" alt="logo" className="h-24 rounded-full" />
                 Guider.lk
               </span>
             </div>
@@ -51,7 +52,7 @@ export default function Footer() {
                 <ul className="text-gray-400 font-medium">
                   <li className="mb-2">
                     <a href="mailto:guider.express@gmail.com" className="hover:underline ">
-                    expressway.guider@gmail.com
+                      expressway.guider@gmail.com
                     </a>
                   </li>
                   <li className="mb-2">Whatsapp</li>

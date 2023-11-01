@@ -5,7 +5,7 @@ export default function TimeTable({ times }) {
   return (
     <>
       <div className="p-5 mt-5 bg-gray-200 rounded-2xl">
-        <Table aria-label="Example static collection table">
+        <Table aria-label="Example static collection table" className="min-h-[240px]">
           <TableHeader>
             <TableColumn>BUS</TableColumn>
             <TableColumn>FROM</TableColumn>
@@ -15,7 +15,7 @@ export default function TimeTable({ times }) {
             <TableColumn>ACTIONS</TableColumn>
           </TableHeader>
 
-          <TableBody>
+          <TableBody emptyContent={"No data to display."}>
             {times.map((time) => (
               <TableRow key={time._id}>
                 <TableCell>{time.busName}</TableCell>

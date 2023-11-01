@@ -133,32 +133,35 @@ export default function Settings() {
             </div>
           ) : (
             <div className="flex flex-col justify-center items-center w-full py-10 px-24 gap-8">
-              <h1 className="text-2xl font-semibold text-gray-700">Control Panel</h1>
+              <h1 className="text-[30px] font-semibold text-white bg-primary px-10 py-3 rounded-2xl">
+                Control Panel
+              </h1>
 
-              <div className="flex flex-col items-center justify-center w-full">
-                <div className="flex w-full gap-5">
-                  {(user?.role === "admin" || user?.role === "bus") && (
-                    <>
-                      <Button className="" color="success" onPress={onOpenAddNewBus} auto>
-                        Add new bus
-                      </Button>
-
-                      <Button className="" color="success" onPress={onOpenAddTimeToBus} auto>
-                        Add new time
-                      </Button>
-                    </>
-                  )}
-                </div>
-
-                <div className="flex gap-4 w-full mt-10">
+              <div className="flex flex-col items-center justify-center w-full mt-6">
+                <div className="flex gap-4 w-full">
                   <div className="flex flex-col w-[50%]">
-                    <div className="text-[25px] font-bold">Bus List</div>
+                    <div className="flex gap-10">
+                      <div className="text-[25px] font-bold">Bus List</div>
+                      {(user?.role === "admin" || user?.role === "bus") && (
+                        <Button className="" color="success" onPress={onOpenAddNewBus} auto>
+                          Add new bus
+                        </Button>
+                      )}
+                    </div>
 
                     <BusTable busses={busses} />
                   </div>
 
                   <div className="flex flex-col w-[50%]">
-                    <div className="text-[25px] font-bold">Timetable</div>
+                    <div className="flex gap-10">
+                      <div className="text-[25px] font-bold">Timetable</div>
+
+                      {(user?.role === "admin" || user?.role === "bus") && (
+                        <Button className="" color="success" onPress={onOpenAddTimeToBus} auto>
+                          Add new time
+                        </Button>
+                      )}
+                    </div>
 
                     <TimeTable times={busTimes} />
                   </div>

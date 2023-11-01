@@ -5,7 +5,7 @@ export default function BusTable({ busses }) {
   return (
     <>
       <div className="p-5 mt-5 bg-gray-200 rounded-2xl">
-        <Table aria-label="Example static collection table">
+        <Table aria-label="Example static collection table" className="min-h-[240px]">
           <TableHeader>
             <TableColumn>NAME</TableColumn>
             <TableColumn>PLATE</TableColumn>
@@ -15,7 +15,7 @@ export default function BusTable({ busses }) {
             <TableColumn>ACTIONS</TableColumn>
           </TableHeader>
 
-          <TableBody>
+          <TableBody emptyContent={"No data to display."}>
             {busses.map((bus) => (
               <TableRow key={bus._id}>
                 <TableCell>{bus.name}</TableCell>

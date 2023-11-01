@@ -14,15 +14,16 @@ export async function POST(request) {
   const res = await request.json();
   if (!res) return Response.json({ error: "No data provided" }, { status: 400 });
 
-  const { bus, from, to, startTime, endTime } = res;
+  const { bus, from, to, price, startTime, endTime } = res;
 
-  if (!bus || !from || !to || !startTime || !endTime)
+  if (!bus || !from || !to || !price || !startTime || !endTime)
     return Response.json({ error: "Missing data" }, { status: 400 });
 
   const busTimeExists = await BusTime.findOne({
     bus,
     from,
     to,
+    price,
     startTime,
     endTime,
   });
@@ -51,6 +52,7 @@ export async function POST(request) {
     bus,
     from,
     to,
+    price,
     startTime,
     endTime,
   });

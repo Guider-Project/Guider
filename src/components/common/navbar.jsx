@@ -9,7 +9,12 @@ export default function NavBar({ activeTab }) {
   return (
     <Navbar maxWidth="full" className="h-[60px] px-24 shadow-lg" isBordered>
       <NavbarBrand>
-        <p className="font-bold text-inherit">Guider</p>
+        <a href="/">
+          <p className="flex font-bold items-center text-inherit">
+            <img src="/logo/Guider_blue.png" alt="logo" className="h-20 rounded-full" />
+            Guider
+          </p>
+        </a>
       </NavbarBrand>
       <NavbarContent className="hidden sm:flex gap-4" justify="end">
         <NavbarItem
