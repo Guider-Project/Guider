@@ -4,7 +4,7 @@ import { Navbar, NavbarBrand, NavbarContent, NavbarItem, Button, Avatar } from "
 import { useSession, signOut } from "next-auth/react";
 
 export default function NavBar({ activeTab }) {
-  const { status } = useSession();
+  const { data: session, status } = useSession();
 
   return (
     <Navbar maxWidth="full" className="h-[60px] px-24 shadow-lg" isBordered>
@@ -81,11 +81,13 @@ export default function NavBar({ activeTab }) {
                 className="cursor-pointer"
               />
 
-              <a href="/settings">
-                <Button auto size="small" color="success" className="font-semibold">
-                  Settings
-                </Button>
-              </a>
+              {(session?.data?.role === "owner" || session?.data?.role === "bus") && (
+                <a href="/control-panel">
+                  <Button auto size="small" color="success" className="font-semibold">
+                    Control Panel
+                  </Button>
+                </a>
+              )}
 
               <Button
                 auto
