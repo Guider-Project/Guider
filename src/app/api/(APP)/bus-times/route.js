@@ -1,5 +1,5 @@
 import { dbConnect } from "@/lib/dbConnect";
-import { BusTime } from "@/models";
+import { Bus, BusTime } from "@/models";
 
 import { verifyJWT } from "@/utils/jwt";
 
@@ -7,7 +7,23 @@ export async function GET(request) {
   await dbConnect();
 
   const busTimes = await BusTime.find({});
-  return Response.json(busTimes);
+  const buses = await Bus.find({});
+
+  let data = [];
+
+  for (let i = 0; i < busTimes.length; i++) {
+    const busTime = busTimes[i];
+    const bus = buses.find((bus) => bus._id.toString() === busTime.bus.toString());
+    if (bus) {
+      data.push({
+        ...busTime._doc,
+        busName: bus.name,
+        plateNumber: bus.plateNumber,
+      });
+    }
+  }
+
+  return Response.json(data);
 }
 
 export async function POST(request) {
@@ -34,7 +50,13 @@ export async function POST(request) {
   if (!bus || !from || !to || !price || !startTime || !endTime)
     return Response.json({ error: "Missing data" }, { status: 400 });
 
-  if (userId !== token.data._id) return Response.json({ error: "Unauthorized" }, { status: 401 });
+  const existBus = await Bus.findOne({ _id: bus });
+  if (!existBus) return Response.json({ error: "Bus not found" }, { status: 400 });
+
+  if (existBus.userId.toString() !== token.data._id)
+    return Response.json({ error: "Unauthorized" }, { status: 401 });
+
+  console.log(existBus);
 
   const busTimeExists = await BusTime.findOne({
     bus,
@@ -74,6 +96,7 @@ export async function POST(request) {
     startTime,
     endTime,
     userId,
+    maxSeats: existBus.seats,
   });
 
   return Response.json(busTime);

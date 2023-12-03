@@ -1,92 +1,80 @@
 "use client";
-import React from "react";
-import { Table, TableHeader, TableColumn, TableBody, TableRow, TableCell } from "@nextui-org/react";
-import { Chip } from "@nextui-org/react";
 
-const statusColorMap = {
+import React, { useEffect } from "react";
+import { Chip, Button } from "@nextui-org/react";
+import { Table, TableHeader, TableColumn, TableBody, TableRow, TableCell } from "@nextui-org/react";
+
+const seatsColorMap = {
   available: "success",
   full: "danger",
   "almost full": "warning",
 };
 
-export default function TravelsTable() {
+const statusColorMap = {
+  true: "success",
+  false: "danger",
+};
+
+export default function TravelsTable({ schedule }) {
   const columns = [
     { name: "FROM", uid: "from" },
     { name: "TO", uid: "to" },
-    { name: "TIME", uid: "time" },
+    { name: "DATE", uid: "date" },
+    { name: "TIME", uid: "startTime" },
     { name: "PRICE", uid: "price" },
-    { name: "PLATE", uid: "plate" },
+    { name: "BUS", uid: "busName" },
+    { name: "PLATE", uid: "plateNumber" },
     { name: "SEATS", uid: "seats" },
-    { name: "STATUS", uid: "status" },
+    { name: "STATUS", uid: "available" },
+    { name: "ACTIONS", uid: "actions" },
   ];
 
-  const users = [
-    {
-      id: 1,
-      from: "Kadawatha",
-      to: "Makumbura",
-      time: "10:00AM",
-      price: "Rs. 300",
-      plate: "ABC-1234",
-      seats: "50/50",
-      status: "full",
-    },
-    {
-      id: 2,
-      from: "Makumbura",
-      to: "Embilipitiya",
-      time: "10:15AM",
-      price: "Rs. 1200",
-      plate: "ABC-1234",
-      seats: "45/50",
-      status: "almost full",
-    },
-    {
-      id: 3,
-      from: "Makumbura",
-      to: "Matara",
-      time: "10:30AM",
-      price: "Rs. 1070",
-      plate: "ABC-1234",
-      seats: "11/50",
-      status: "available",
-    },
-    {
-      id: 4,
-      from: "Galle",
-      to: "Makumbura",
-      time: "10:45AM",
-      price: "Rs. 1000",
-      plate: "ABC-1234",
-      seats: "28/50",
-      status: "available",
-    },
-    {
-      id: 5,
-      from: "Kadawatha",
-      to: "Makumbura",
-      time: "11:00AM",
-      price: "Rs. 300",
-      plate: "ABC-1234",
-      seats: "50/50",
-      status: "full",
-    },
-  ];
+  useEffect(() => {
+    console.log(schedule);
+  }, [schedule]);
 
-  const renderCell = React.useCallback((user, columnKey) => {
-    const cellValue = user[columnKey];
+  const renderCell = React.useCallback(
+    (bus, columnKey) => {
+      const cellValue = bus[columnKey];
 
-    switch (columnKey) {
-      case "status":
-        return (
-          <Chip className="capitalize" color={statusColorMap[user.status]} size="sm" variant="flat">
-            {cellValue}
-          </Chip>
-        );
-      default:
-        return cellValue;
-    }
-  }, []);
+      switch (columnKey) {
+        case "seats":
+          const seatState =
+            bus.seats > bus.maxSeats
+              ? "full"
+              : bus.seats > bus.maxSeats - 5
+              ? "almost full"
+              : "available";
+          return (
+            <Chip className="capitalize" color={seatsColorMap[seatState]} size="sm" variant="flat">
+              {seatState}
+            </Chip>
+          );
+        case "available":
+          return (
+            <Chip
+              className="capitalize"
+              color={statusColorMap[bus.available]}
+              size="sm"
+              variant="flat"
+            >
+              {bus.available ? "Available" : "Not available"}
+            </Chip>
+          );
+        case "actions":
+          return (
+            <div className="flex flex-row gap-2">
+              <button className="px-2 py-1 text-white bg-primary rounded-md">
+                Make a reservation
+              </button>
+            </div>
+          );
+        default:
+          return cellValue;
+      }
+    },
+    [schedule],
+  );
 
   return (
     <Table aria-label="Example table with custom cells">
@@ -97,9 +85,9 @@ export default function TravelsTable() {
           </TableColumn>
         )}
       </TableHeader>
-      <TableBody items={users}>
+      <TableBody items={schedule}>
         {(item) => (
-          <TableRow key={item.id}>
+          <TableRow key={item._id}>
             {(columnKey) => <TableCell>{renderCell(item, columnKey)}</TableCell>}
           </TableRow>
         )}

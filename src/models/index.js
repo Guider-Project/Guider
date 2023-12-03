@@ -71,6 +71,18 @@ const butTimeSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  seats: {
+    type: Number,
+    default: 0,
+  },
+  maxSeats: {
+    type: Number,
+    required: true,
+  },
+  available: {
+    type: Boolean,
+    default: true,
+  },
   userId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
