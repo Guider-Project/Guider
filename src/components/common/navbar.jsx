@@ -96,7 +96,16 @@ export default function NavBar({ activeTab }) {
                     <p className="font-semibold">Signed in as</p>
                     <p className="font-semibold">{session?.data?.email}</p>
                   </DropdownItem>
-                  {(session?.data?.role === "owner" || session?.data?.role === "bus") && (
+
+                  {session?.data?.role === "admin" && (
+                    <DropdownItem key="orders">
+                      <a href="/recieved-reservations" className="w-full">
+                        Received Reservations
+                      </a>
+                    </DropdownItem>
+                  )}
+
+                  {(session?.data?.role === "admin" || session?.data?.role === "bus") && (
                     <DropdownItem key="settings">
                       <a href="/control-panel" className="w-full">
                         Control Panel
@@ -104,9 +113,22 @@ export default function NavBar({ activeTab }) {
                     </DropdownItem>
                   )}
 
-                  <DropdownItem key="team_settings">Team Settings</DropdownItem>
-                  <DropdownItem key="analytics">Analytics</DropdownItem>
-                  <DropdownItem key="help_and_feedback">Help & Feedback</DropdownItem>
+                  {session?.data?.role === "client" && (
+                    <DropdownItem key="bookings">
+                      <a href="/my-bookings" className="w-full">
+                        My bookings
+                      </a>
+                    </DropdownItem>
+                  )}
+
+                  {session?.data?.role === "admin" && (
+                    <DropdownItem key="bookings">
+                      <a href="/analytics" className="w-full">
+                        Analytics
+                      </a>
+                    </DropdownItem>
+                  )}
+
                   <DropdownItem key="logout" color="danger" onClick={() => signOut()}>
                     Log Out
                   </DropdownItem>

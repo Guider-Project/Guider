@@ -14,6 +14,10 @@ const userSchema = new mongoose.Schema({
     type: String,
     default: "user",
   },
+  timestamp: {
+    type: Date,
+    default: Date.now,
+  },
 });
 
 const busSchema = new mongoose.Schema({
@@ -43,6 +47,10 @@ const busSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
     required: true,
+  },
+  timestamp: {
+    type: Date,
+    default: Date.now,
   },
 });
 
@@ -87,6 +95,10 @@ const butTimeSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
     required: true,
+  },
+  timestamp: {
+    type: Date,
+    default: Date.now,
   },
 });
 

@@ -3,6 +3,14 @@ import bcrypt from "bcrypt";
 import { dbConnect } from "@/lib/dbConnect";
 import { User } from "@/models";
 
+export async function GET() {
+  await dbConnect();
+
+  const users = await User.find({}, { _id: 1 });
+
+  return Response.json(users);
+}
+
 export async function POST(request) {
   await dbConnect();
 

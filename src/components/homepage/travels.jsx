@@ -1,16 +1,18 @@
 "use client";
 
 import axios from "axios";
+import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import { Card, CardBody, useDisclosure } from "@nextui-org/react";
 
 import QuickReservation from "@/components/homepage/travels/quickReservation";
 import TravelsTable from "@/components/homepage/travels/travelsTable";
-
 import MakeReservationModal from "@/components/reservations/modals/makeReservationModal";
 
 export default function Travels() {
+  const { data: session, status } = useSession();
+
   const [schedule, setSchedule] = useState([]);
   const [nextBusSchedule, setNextBusSchedule] = useState([]);
 
@@ -21,7 +23,6 @@ export default function Travels() {
     async function getBusses() {
       try {
         const { data } = await axios.get("/api/bus-times");
-        console.log(data);
         setSchedule(data);
       } catch (error) {
         console.log(error);
@@ -112,6 +113,10 @@ export default function Travels() {
   } = useDisclosure();
 
   const handleSelectSchedule = (schedule) => {
+    if (session?.data?.role !== "client")
+      return toast.error(
+        "Reservations are only for users. Please make an default account to continue",
+      );
     setSelectedSchedule(schedule);
     onOpenMakeReservation();
   };
