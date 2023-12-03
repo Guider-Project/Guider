@@ -10,8 +10,14 @@ import Footer from "@/components/common/footer";
 
 import BusTable from "@/components/control-panel/tables/busTable";
 import TimeTable from "@/components/control-panel/tables/timeTable";
-import AddNewBusModal from "@/components/control-panel/addNewBusModal";
-import AddTimeToBus from "@/components/control-panel/addTimeToBus";
+
+import AddBusModal from "@/components/control-panel/addBusModal";
+import EditBusModal from "@/components/control-panel/editBusModal";
+import DeleteBusModal from "@/components/control-panel/deleteBusModal";
+
+import AddTimeModal from "@/components/control-panel/addTimeModal";
+import EditTimeToBus from "@/components/control-panel/editTimeModal";
+import DeleteTimeToBus from "@/components/control-panel/deleteTimeModal";
 
 export default function Settings() {
   const { data: session, status } = useSession();
@@ -103,6 +109,7 @@ export default function Settings() {
     console.log("busTimes", busTimes);
   }, [session, busses, busTimes]);
 
+  // Bus Modals
   const {
     isOpen: isOpenAddNewBus,
     onOpen: onOpenAddNewBus,
@@ -111,11 +118,63 @@ export default function Settings() {
   } = useDisclosure();
 
   const {
+    isOpen: isOpenEditBus,
+    onOpen: onOpenEditBus,
+    onClose: onCloseEditBus,
+    onOpenChange: onOpenChangeEditBus,
+  } = useDisclosure();
+
+  const {
+    isOpen: isOpenDeleteBus,
+    onOpen: onOpenDeleteBus,
+    onClose: onCloseDeleteBus,
+    onOpenChange: onOpenChangeDeleteBus,
+  } = useDisclosure();
+
+  // Time Modals
+  const {
     isOpen: isOpenAddTimeToBus,
     onOpen: onOpenAddTimeToBus,
     onClose: onCloseAddTimeToBus,
     onOpenChange: onOpenChangeAddTimeToBus,
   } = useDisclosure();
+
+  const {
+    isOpen: isOpenEditTimeToBus,
+    onOpen: onOpenEditTimeToBus,
+    onClose: onCloseEditTimeToBus,
+    onOpenChange: onOpenChangeEditTimeToBus,
+  } = useDisclosure();
+
+  const {
+    isOpen: isOpenDeleteTimeToBus,
+    onOpen: onOpenDeleteTimeToBus,
+    onClose: onCloseDeleteTimeToBus,
+    onOpenChange: onOpenChangeDeleteTimeToBus,
+  } = useDisclosure();
+
+  const [selectedBus, setSelectedBus] = useState(null);
+  const [selectedTime, setSelectedTime] = useState(null);
+
+  const handleEditBus = (bus) => {
+    setSelectedBus(bus);
+    onOpenEditBus();
+  };
+
+  const handleDeleteBus = (bus) => {
+    setSelectedBus(bus);
+    onOpenDeleteBus();
+  };
+
+  const handleEditTime = (time) => {
+    setSelectedTime(time);
+    onOpenEditTimeToBus();
+  };
+
+  const handleDeleteTime = (time) => {
+    setSelectedTime(time);
+    onOpenDeleteTimeToBus();
+  };
 
   return (
     <>
@@ -149,7 +208,7 @@ export default function Settings() {
                       )}
                     </div>
 
-                    <BusTable busses={busses} />
+                    <BusTable busses={busses} onEdit={handleEditBus} onDelete={handleDeleteBus} />
                   </div>
 
                   <div className="flex flex-col w-[50%]">
@@ -163,7 +222,11 @@ export default function Settings() {
                       )}
                     </div>
 
-                    <TimeTable times={busTimes} />
+                    <TimeTable
+                      times={busTimes}
+                      onEdit={handleEditTime}
+                      onDelete={handleDeleteTime}
+                    />
                   </div>
                 </div>
               </div>
@@ -172,18 +235,51 @@ export default function Settings() {
         </>
       )}
 
-      <AddNewBusModal
+      <AddBusModal
         isOpen={isOpenAddNewBus}
         onClose={onCloseAddNewBus}
         onOpenChange={onOpenChangeAddNewBus}
         onUpdate={handleChangeUpdate}
       />
 
-      <AddTimeToBus
+      <EditBusModal
+        bus={selectedBus}
+        isOpen={isOpenEditBus}
+        onClose={onCloseEditBus}
+        onOpenChange={onOpenChangeEditBus}
+        onUpdate={handleChangeUpdate}
+      />
+
+      <DeleteBusModal
+        bus={selectedBus}
+        isOpen={isOpenDeleteBus}
+        onClose={onCloseDeleteBus}
+        onOpenChange={onOpenChangeDeleteBus}
+        onUpdate={handleChangeUpdate}
+      />
+
+      <AddTimeModal
         busses={busses}
         isOpen={isOpenAddTimeToBus}
         onClose={onCloseAddTimeToBus}
         onOpenChange={onOpenChangeAddTimeToBus}
+        onUpdate={handleChangeUpdate}
+      />
+
+      <EditTimeToBus
+        busses={busses}
+        time={selectedTime}
+        isOpen={isOpenEditTimeToBus}
+        onClose={onCloseEditTimeToBus}
+        onOpenChange={onOpenChangeEditTimeToBus}
+        onUpdate={handleChangeUpdate}
+      />
+
+      <DeleteTimeToBus
+        time={selectedTime}
+        isOpen={isOpenDeleteTimeToBus}
+        onClose={onCloseDeleteTimeToBus}
+        onOpenChange={onOpenChangeDeleteTimeToBus}
         onUpdate={handleChangeUpdate}
       />
 

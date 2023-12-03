@@ -1,7 +1,11 @@
 import React from "react";
+import { useSession } from "next-auth/react";
 import { Table, TableHeader, TableColumn, TableBody, TableRow, TableCell } from "@nextui-org/react";
 
-export default function BusTable({ busses }) {
+export default function BusTable(props) {
+  const { busses, onEdit, onDelete } = props;
+  const { data: session } = useSession();
+
   return (
     <>
       <div className="p-5 mt-5 bg-gray-200 rounded-2xl">
@@ -24,10 +28,26 @@ export default function BusTable({ busses }) {
                 <TableCell>{bus.seats}</TableCell>
                 <TableCell>{bus.available ? "Active" : "Inactive"}</TableCell>
                 <TableCell>
-                  <button className="px-2 py-1 text-white bg-green-500 rounded-md">Edit</button>
-                  <button className="px-2 py-1 ml-2 text-white bg-red-500 rounded-md">
-                    Delete
-                  </button>
+                  {session?.data?._id === bus.userId ? (
+                    <>
+                      <button
+                        className="px-2 py-1 text-white bg-green-500 rounded-md"
+                        onClick={() => onEdit(bus)}
+                      >
+                        Edit
+                      </button>
+                      <button
+                        className="px-2 py-1 ml-2 text-white bg-red-500 rounded-md"
+                        onClick={() => onDelete(bus)}
+                      >
+                        Delete
+                      </button>
+                    </>
+                  ) : (
+                    <button className="px-2 py-1 text-white bg-red-200 rounded-md">
+                      Not Allowed
+                    </button>
+                  )}
                 </TableCell>
               </TableRow>
             ))}

@@ -1,10 +1,10 @@
 import axios from "axios";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
 import { ToastContainer, toast } from "react-toastify";
 import { Button, Input, Spinner } from "@nextui-org/react";
+import { Dropdown, DropdownItem, DropdownMenu, DropdownTrigger } from "@nextui-org/react";
 import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter } from "@nextui-org/react";
-import { Dropdown, DropdownTrigger, DropdownMenu, DropdownItem } from "@nextui-org/react";
 
 const SUPPORTED_LOCATIONS = [
   "Makumbura",
@@ -15,7 +15,11 @@ const SUPPORTED_LOCATIONS = [
   "Kadawatha",
 ].sort();
 
-export default function AddTimeToBus({ busses, isOpen, onClose, onOpenChange, onUpdate }) {
+import { getToken } from "@/utils/jwt";
+
+export default function EditTimeModal(props) {
+  const { busses, time, isOpen, onClose, onOpenChange, onUpdate } = props;
+
   const { data: session } = useSession();
 
   const [submitting, setSubmitting] = useState(false);
@@ -28,6 +32,18 @@ export default function AddTimeToBus({ busses, isOpen, onClose, onOpenChange, on
   const [startTime, setStartTime] = useState("");
   const [endTime, setEndTime] = useState("");
 
+  useEffect(() => {
+    if (time) {
+      setBus(time.bus.toString());
+      setBusName(time.busName);
+      setFrom(time.from);
+      setTo(time.to);
+      setPrice(time.price);
+      setStartTime(time.startTime);
+      setEndTime(time.endTime);
+    }
+  }, [time]);
+
   const handleChangeBus = (e) => {
     const _id = e.currentKey;
     const _bus = busses.find((_bus) => _bus._id === _id);
@@ -39,7 +55,7 @@ export default function AddTimeToBus({ busses, isOpen, onClose, onOpenChange, on
 
   const handleSubmit = async () => {
     try {
-      if (!bus || !from || !to || !startTime || !endTime) {
+      if (!from || !to || !startTime || !endTime) {
         return toast.error("Please fill all the fields");
       }
 
@@ -62,19 +78,23 @@ export default function AddTimeToBus({ busses, isOpen, onClose, onOpenChange, on
         price,
         startTime,
         endTime,
+        userId: session?.data?._id,
       };
 
-      console.log(body);
+      const token = await getToken();
 
       setSubmitting(true);
 
-      await axios.post("/api/bus-times", body);
+      await axios.put(`/api/bus-times?id=${time._id}`, body, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
-      toast.success("Time added successfully");
+      toast.success("Time updated successfully");
       onUpdate();
       onClose();
 
-      setBus("Select Bus");
       setBusName("");
       setFrom("");
       setTo("");
@@ -82,14 +102,16 @@ export default function AddTimeToBus({ busses, isOpen, onClose, onOpenChange, on
       setStartTime("");
       setEndTime("");
     } catch (error) {
-      let message = "Error adding time";
+      console.log(error);
+
+      let message = "Error updating time";
       if (error?.response?.data?.error) {
         message = error.response.data.error;
       }
       toast.error(message);
+    } finally {
+      setSubmitting(false);
     }
-
-    setSubmitting(false);
   };
 
   return (
@@ -105,7 +127,7 @@ export default function AddTimeToBus({ busses, isOpen, onClose, onOpenChange, on
                 <div className="flex flex-col gap-2">
                   <div className="">Select Bus</div>
                   <Dropdown>
-                    <DropdownTrigger>
+                    <DropdownTrigger isDisabled={true}>
                       <Button variant="bordered" className="capitalize">
                         {busName || "Select Bus"}
                       </Button>
@@ -124,6 +146,7 @@ export default function AddTimeToBus({ busses, isOpen, onClose, onOpenChange, on
                       ))}
                     </DropdownMenu>
                   </Dropdown>
+                  <span className="ml-2 text-sm text-gray-400">This cannot be changed</span>
                 </div>
 
                 <div className="flex flex-col gap-2">

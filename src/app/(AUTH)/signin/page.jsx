@@ -64,7 +64,7 @@ export default function SignIn() {
                     type="email"
                     name="email"
                     id="email"
-                    placeholder="name@company.com"
+                    placeholder="name@example.com"
                     required
                     className="bg-gray-700 border border-gray-600 placeholder-gray-400 text-white rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                   />

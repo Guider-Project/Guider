@@ -16,9 +16,6 @@ const userSchema = new mongoose.Schema({
   },
 });
 
-const User = mongoose.models.User || mongoose.model("User", userSchema);
-module.exports.User = User;
-
 const busSchema = new mongoose.Schema({
   name: {
     type: String,
@@ -42,14 +39,12 @@ const busSchema = new mongoose.Schema({
     type: Boolean,
     default: true,
   },
-  owner: {
+  userId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
+    required: true,
   },
 });
-
-const Bus = mongoose.models.Bus || mongoose.model("Bus", busSchema);
-module.exports.Bus = Bus;
 
 const butTimeSchema = new mongoose.Schema({
   bus: {
@@ -76,7 +71,18 @@ const butTimeSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  userId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+    required: true,
+  },
 });
+
+const User = mongoose.models.User || mongoose.model("User", userSchema);
+module.exports.User = User;
+
+const Bus = mongoose.models.Bus || mongoose.model("Bus", busSchema);
+module.exports.Bus = Bus;
 
 const BusTime = mongoose.models.BusTime || mongoose.model("BusTime", butTimeSchema);
 module.exports.BusTime = BusTime;

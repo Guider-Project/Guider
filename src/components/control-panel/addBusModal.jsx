@@ -5,7 +5,11 @@ import { ToastContainer, toast } from "react-toastify";
 import { Button, Input, Spinner } from "@nextui-org/react";
 import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter } from "@nextui-org/react";
 
-export default function AddNewBusModal({ isOpen, onClose, onOpenChange, onUpdate }) {
+import { getToken } from "@/utils/jwt";
+
+export default function AddBusModal(props) {
+  const { isOpen, onClose, onOpenChange, onUpdate } = props;
+
   const { data: session } = useSession();
 
   const [submitting, setSubmitting] = useState(false);
@@ -17,9 +21,8 @@ export default function AddNewBusModal({ isOpen, onClose, onOpenChange, onUpdate
 
   const handleSubmit = async () => {
     try {
-      if (!name || !plateNumber || !phoneNumber || !seats) {
+      if (!name || !plateNumber || !phoneNumber || !seats)
         return toast.error("Please fill all the fields");
-      }
 
       if (!session?.data?._id) return toast.error("Please sign in to continue");
 
@@ -28,12 +31,18 @@ export default function AddNewBusModal({ isOpen, onClose, onOpenChange, onUpdate
         plateNumber,
         phoneNumber,
         seats,
-        owner: session?.data?._id,
+        userId: session?.data?._id,
       };
+
+      const token = await getToken();
 
       setSubmitting(true);
 
-      await axios.post("/api/busses", body);
+      await axios.post("/api/busses", body, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
       toast.success("Bus added successfully");
       onUpdate();
