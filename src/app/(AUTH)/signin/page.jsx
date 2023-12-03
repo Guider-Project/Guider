@@ -1,10 +1,11 @@
 "use client";
 
 import axios from "axios";
-import { useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { useSession, signIn } from "next-auth/react";
+import { signIn, useSession } from "next-auth/react";
 import { ToastContainer, toast } from "react-toastify";
+import { Input, Button, Spinner } from "@nextui-org/react";
 
 export default function SignIn() {
   const { status } = useSession();
@@ -15,22 +16,32 @@ export default function SignIn() {
     if (status === "loading") return;
     if (status === "authenticated") router.push("/");
   }, [status]);
-  const handleSubmit = async (e) => {
-    e.preventDefault();
 
-    const { email, password } = e.target.elements;
+  const [loading, setLoading] = useState(false);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
+  const handleSubmit = async () => {
+    if (!email) return toast.error("Email is required.");
+    if (!password) return toast.error("Password is required.");
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) return toast.error("Invalid email.");
+
+    if (password.length < 6) return toast.error("Password must be at least 6 characters.");
+
+    setLoading(true);
     try {
       await axios.post("/api/users", {
-        email: email.value,
-        password: password.value,
+        email,
+        password,
       });
 
       toast.success("Signed in successfully!");
 
       await signIn("credentials", {
-        email: email.value,
-        password: password.value,
+        email,
+        password,
         callbackUrl: "/",
       });
     } catch (error) {
@@ -39,67 +50,62 @@ export default function SignIn() {
       if (error.response?.data?.error) message = error.response.data.error;
       toast.error(message);
     }
+    setLoading(false);
   };
 
   return (
     <>
       <ToastContainer />
 
-      <section className="bg-gray-900">
-        <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">
-          <a href="#" className="flex items-center mb-6 text-2xl font-semibold text-white">
-            Guider.lk
-          </a>
-          <div className="w-full bg-gray-800 border-gray-700 rounded-lg shadow sm:max-w-md xl:p-0">
-            <div className="p-6 space-y-4 md:space-y-6 sm:p-8">
-              <h1 className="text-xl font-bold leading-tight tracking-tight text-white md:text-2xl">
-                Sign in to your account
-              </h1>
-              <form className="space-y-4 md:space-y-6" onSubmit={handleSubmit}>
-                <div>
-                  <label htmlFor="email" className="block mb-2 text-sm font-medium text-white">
-                    Your email
-                  </label>
-                  <input
+      <div className="flex flex-col items-center justify-center w-full h-screen gap-4 bg-homepageBus">
+        <div className="flex flex-col items-center justify-center w-full h-screen gap-4 bg-blue-300 bg-opacity-50">
+          <div className="flex flex-col items-center justify-center w-1/3 h-1/2 bg-white rounded-2xl shadow-lg">
+            <div className="flex flex-col items-center justify-center w-full p-10">
+              <div className="flex justify-between items-center w-full pb-10">
+                <p className="flex font-bold items-center text-inherit">
+                  <img src="/logo/Guider_blue_low.png" alt="logo" width="100px" className="pr-8" />
+                  Guider
+                </p>
+                <h1 className="text-xl font-bold text-primary pr-10">Sign In</h1>
+              </div>
+              <div className="flex flex-col gap-5 w-full">
+                <div className="flex w-full flex-wrap md:flex-nowrap gap-4">
+                  <Input
                     type="email"
-                    name="email"
-                    id="email"
-                    placeholder="name@example.com"
-                    required
-                    className="bg-gray-700 border border-gray-600 placeholder-gray-400 text-white rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-                  />
-                </div>
-                <div>
-                  <label htmlFor="password" className="block mb-2 text-sm font-medium text-white">
-                    Password
-                  </label>
-                  <input
-                    type="password"
-                    name="password"
-                    id="password"
-                    placeholder="••••••••"
-                    required
-                    className="bg-gray-700 border border-gray-600 placeholder-gray-400 text-white rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                    label="Email"
+                    placeholder="Enter your email"
+                    labelPlacement="outside"
+                    onChange={(e) => setEmail(e.target.value)}
                   />
                 </div>
 
-                <button
-                  type="submit"
-                  className="w-full text-white bg-primary-600 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
-                >
-                  Sign in
-                </button>
-                <p className="text-sm font-light text-gray-400">
-                  Don’t have an account yet?{" "}
-                  <a href="/signup" className="font-medium text-primary-500 hover:underline">
-                    Sign up
-                  </a>
-                </p>
-              </form>
+                <div className="flex w-full flex-wrap md:flex-nowrap gap-4">
+                  <Input
+                    type="password"
+                    label="Password"
+                    placeholder="Enter your password"
+                    labelPlacement="outside"
+                    onChange={(e) => setPassword(e.target.value)}
+                  />
+                </div>
+              </div>
+
+              <div className="flex w-full justify-center mt-5">
+                <Button color="primary" className="w-full" onPress={handleSubmit} auto>
+                  Sign In {loading && <Spinner size="sm" color="white" />}
+                </Button>
+              </div>
+
+              <p className="text-sm text-gray-800 mt-5">
+                Don’t have an account yet?{" "}
+                <a href="/signup" className="font-medium text-primary-500 hover:underline">
+                  Sign up
+                </a>
+              </p>
             </div>
           </div>
         </div>
-      </section>
+      </div>
     </>
   );
 }

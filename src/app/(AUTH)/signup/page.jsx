@@ -6,6 +6,22 @@ import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { ToastContainer, toast } from "react-toastify";
 
+import { Input, Button, Spinner } from "@nextui-org/react";
+import { Select, SelectItem } from "@nextui-org/react";
+
+import SelectorIcon from "@/icons/selectorIcon";
+
+const ROLES = [
+  {
+    label: "Make a reservation",
+    value: "client",
+  },
+  {
+    label: "Register a bus",
+    value: "bus",
+  },
+];
+
 export default function SignUp() {
   const [userCreated, setUserCreated] = useState(false);
 
@@ -18,23 +34,38 @@ export default function SignUp() {
     if (status === "authenticated") router.push("/");
   }, [status]);
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const [loading, setLoading] = useState(false);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [role, setRole] = useState("");
 
-    const { email, password, role } = e.target.elements;
+  const handleChangeRole = (e) => setRole(e.target.value);
 
-    if (password.value.length < 6) {
-      return toast.error("Password must be at least 6 characters.");
-    }
+  const handleSubmit = async () => {
+    if (!email) return toast.error("Email is required.");
+    if (!role) return toast.error("Role is required.");
+    if (!password) return toast.error("Password is required.");
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) return toast.error("Invalid email.");
+
+    if (password.length < 6) return toast.error("Password must be at least 6 characters.");
+
+    const data = {
+      email,
+      password,
+      role,
+    };
+
+    setLoading(true);
 
     try {
-      const response = await axios.post("/api/signup", {
-        email: email.value,
-        password: password.value,
-        role: role.value,
-      });
+      await axios.post("/api/signup", data);
+      toast.success(`Account created successfully!`);
 
-      toast.success(`Account created successfully! ${response.data.user}`);
+      setEmail("");
+      setPassword("");
+      setRole("");
       setUserCreated(true);
     } catch (error) {
       console.log(error);
@@ -42,95 +73,100 @@ export default function SignUp() {
       if (error.response?.data?.error) message = error.response.data.error;
       toast.error(message);
     }
+
+    setLoading(false);
   };
 
   return (
     <>
       <ToastContainer />
 
-      <section className="bg-gray-900">
-        <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">
-          <a href="#" className="flex items-center mb-6 text-2xl font-semibold text-white">
-            Guider.lk
-          </a>
-          <div className="w-full bg-gray-800 border-gray-700 rounded-lg shadow sm:max-w-md xl:p-0">
-            {userCreated ? (
-              <div className="p-6 space-y-4 md:space-y-6 sm:p-8">
-                <h1 className="text-xl font-bold leading-tight tracking-tight text-white md:text-2xl">
-                  Account created successfully!
-                </h1>
-                <p className="text-sm font-light text-gray-400">
-                  Go to the{" "}
-                  <a href="/signin" className="underline font-bold text-blue-600">
-                    Sign in
-                  </a>{" "}
-                  page to sign in.
+      <div className="flex flex-col items-center justify-center w-full h-screen gap-4 bg-homepageBus">
+        <div className="flex flex-col items-center justify-center w-full h-screen gap-4 bg-blue-300 bg-opacity-50">
+          <div className="flex flex-col items-center justify-center w-1/3 h-1/2 bg-white rounded-2xl shadow-lg">
+            <div className="flex flex-col items-center justify-center w-full py-0 px-10">
+              <div className="flex justify-between items-center w-full pb-10">
+                <p className="flex font-bold items-center text-inherit">
+                  <img src="/logo/Guider_blue_low.png" alt="logo" width="100px" className="pr-8" />
+                  Guider
                 </p>
+                <h1 className="text-xl font-bold text-primary pr-10">Sign Up</h1>
               </div>
-            ) : (
-              <div className="p-6 space-y-4 md:space-y-6 sm:p-8">
-                <h1 className="text-xl font-bold leading-tight tracking-tight text-white md:text-2xl">
-                  Create your new account
-                </h1>
-                <form className="space-y-4 md:space-y-6" onSubmit={handleSubmit}>
-                  <div>
-                    <label htmlFor="email" className="block mb-2 text-sm font-medium text-white">
-                      Your email
-                    </label>
-                    <input
-                      type="email"
-                      name="email"
-                      id="email"
-                      placeholder="name@example.com"
-                      required
-                      className="bg-gray-700 border border-gray-600 placeholder-gray-400 text-white rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-                    />
+
+              {userCreated ? (
+                <div className="flex flex-col items-center justify-center w-full p-10">
+                  <h1 className="text-xl font-bold leading-tight tracking-tight text-black md:text-2xl">
+                    Account created successfully!
+                  </h1>
+
+                  <p className="text-sm text-gray-500 mt-2">
+                    Go to the{" "}
+                    <a href="/signin" className="underline font-bold text-blue-600">
+                      Sign in
+                    </a>{" "}
+                    page to sign in.
+                  </p>
+                </div>
+              ) : (
+                <>
+                  <div className="flex flex-col gap-5 w-full">
+                    <div className="flex w-full flex-wrap md:flex-nowrap gap-4">
+                      <Input
+                        type="email"
+                        label="Email"
+                        placeholder="Enter your email"
+                        labelPlacement="outside"
+                        onChange={(e) => setEmail(e.target.value)}
+                      />
+                    </div>
+
+                    <div className="flex w-full flex-wrap md:flex-nowrap gap-4">
+                      <Select
+                        label="Role"
+                        placeholder="Select an option"
+                        labelPlacement="outside"
+                        className="w-full"
+                        disableSelectorIconRotation
+                        selectorIcon={<SelectorIcon />}
+                        onChange={handleChangeRole}
+                      >
+                        {ROLES.map((role) => (
+                          <SelectItem key={role.value} value={role.value}>
+                            {role.label}
+                          </SelectItem>
+                        ))}
+                      </Select>
+                    </div>
+
+                    <div className="flex w-full flex-wrap md:flex-nowrap gap-4">
+                      <Input
+                        type="password"
+                        label="Password"
+                        placeholder="Enter your password"
+                        labelPlacement="outside"
+                        onChange={(e) => setPassword(e.target.value)}
+                      />
+                    </div>
                   </div>
-                  <div>
-                    <label htmlFor="password" className="block mb-2 text-sm font-medium text-white">
-                      Password
-                    </label>
-                    <input
-                      type="password"
-                      name="password"
-                      id="password"
-                      placeholder="••••••••"
-                      required
-                      className="bg-gray-700 border border-gray-600 placeholder-gray-400 text-white rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-                    />
+
+                  <div className="flex w-full justify-center mt-5">
+                    <Button color="primary" className="w-full" onPress={handleSubmit} auto>
+                      Sign Up {loading && <Spinner size="sm" color="white" />}
+                    </Button>
                   </div>
-                  <div>
-                    <label htmlFor="role" className="block mb-2 text-sm font-medium text-white">
-                      What you need to do?
-                    </label>
-                    <select
-                      name="role"
-                      id="role"
-                      required
-                      className="bg-gray-700 border border-gray-600 placeholder-gray-400 text-white rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-                    >
-                      <option value="client">Make a Booking</option>
-                      <option value="bus">Register a Bus</option>
-                    </select>
-                  </div>
-                  <button
-                    type="submit"
-                    className="w-full text-white bg-primary-600 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
-                  >
-                    Sign up
-                  </button>
-                  <p className="text-sm font-light text-gray-400">
+
+                  <p className="text-sm text-gray-800 mt-5">
                     Already have an account?{" "}
                     <a href="/signin" className="font-medium text-primary-500 hover:underline">
                       Sign in
                     </a>
                   </p>
-                </form>
-              </div>
-            )}
+                </>
+              )}
+            </div>
           </div>
         </div>
-      </section>
+      </div>
     </>
   );
 }

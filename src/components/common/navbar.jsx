@@ -1,7 +1,9 @@
 "use client";
 
-import { Navbar, NavbarBrand, NavbarContent, NavbarItem, Button, Avatar } from "@nextui-org/react";
 import { useSession, signOut } from "next-auth/react";
+import { Button, Avatar } from "@nextui-org/react";
+import { Navbar, NavbarBrand, NavbarContent, NavbarItem } from "@nextui-org/react";
+import { Dropdown, DropdownTrigger, DropdownMenu, DropdownItem } from "@nextui-org/react";
 
 export default function NavBar({ activeTab }) {
   const { data: session, status } = useSession();
@@ -59,7 +61,7 @@ export default function NavBar({ activeTab }) {
           <a href="/about">About us</a>
         </NavbarItem>
 
-        {status !== "authenticated" ? (
+        {status === "unauthenticated" ? (
           <>
             <NavbarItem>
               <a href="/signin">
@@ -77,35 +79,44 @@ export default function NavBar({ activeTab }) {
               </a>
             </NavbarItem>
           </>
-        ) : (
+        ) : status === "authenticated" ? (
           <NavbarItem>
-            <div className="flex gap-5">
-              <Avatar
-                src="https://cdn.iconscout.com/icon/free/png-512/free-avatar-370-456322.png"
-                size="small"
-                className="cursor-pointer"
-              />
+            <div className="flex items-center gap-4">
+              <Dropdown placement="bottom-end">
+                <DropdownTrigger>
+                  <Avatar
+                    isBordered
+                    as="button"
+                    className="transition-transform"
+                    src="https://cdn.iconscout.com/icon/free/png-512/free-avatar-370-456322.png"
+                  />
+                </DropdownTrigger>
+                <DropdownMenu aria-label="Profile Actions" variant="flat">
+                  <DropdownItem key="profile" className="h-14 gap-2">
+                    <p className="font-semibold">Signed in as</p>
+                    <p className="font-semibold">{session?.data?.email}</p>
+                  </DropdownItem>
+                  {(session?.data?.role === "owner" || session?.data?.role === "bus") && (
+                    <DropdownItem key="settings">
+                      <a href="/control-panel" className="w-full">
+                        Control Panel
+                      </a>
+                    </DropdownItem>
+                  )}
 
-              {(session?.data?.role === "owner" || session?.data?.role === "bus") && (
-                <a href="/control-panel">
-                  <Button auto size="small" color="success" className="font-semibold">
-                    Control Panel
-                  </Button>
-                </a>
-              )}
-
-              <Button
-                auto
-                size="small"
-                color="success"
-                className="font-semibold"
-                onClick={() => signOut()}
-              >
-                Sign out
-              </Button>
+                  <DropdownItem key="team_settings">Team Settings</DropdownItem>
+                  <DropdownItem key="analytics">Analytics</DropdownItem>
+                  <DropdownItem key="help_and_feedback">Help & Feedback</DropdownItem>
+                  <DropdownItem key="logout" color="danger" onClick={() => signOut()}>
+                    Log Out
+                  </DropdownItem>
+                </DropdownMenu>
+              </Dropdown>
             </div>
           </NavbarItem>
-        )}
+        ) : null}
+
+        <NavbarItem></NavbarItem>
       </NavbarContent>
     </Navbar>
   );
