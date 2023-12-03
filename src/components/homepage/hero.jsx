@@ -2,12 +2,13 @@
 
 import axios from "axios";
 import { useState, useEffect } from "react";
+import { ToastContainer, toast } from "react-toastify";
 import { Card, CardBody, CardHeader, Button } from "@nextui-org/react";
 
 export default function Hero() {
   const [busses, setBusses] = useState([]);
   const [journeys, setJourneys] = useState([]);
-  const [reservations, setReservations] = useState([]);
+  const [reservations, setReservations] = useState(0);
   const [transactions, setTransactions] = useState([]);
 
   useEffect(() => {
@@ -17,14 +18,35 @@ export default function Hero() {
         setBusses(data);
       } catch (error) {
         console.log(error);
+        toast.error("Error getting busses!");
+      }
+    }
+
+    async function getReservations() {
+      try {
+        let total = 0;
+
+        const { data } = await axios.get("/api/reservations");
+        let _reservations = [...data];
+
+        for (const reservation of _reservations) total += reservation.seats;
+
+        setReservations(total);
+        setTransactions(data);
+      } catch (error) {
+        console.log(error);
+        toast.error("Error getting reservations!");
       }
     }
 
     getBusses();
+    getReservations();
   }, []);
 
   return (
     <>
+      <ToastContainer />
+
       <div className="flex flex-col h-[630px] py-10 px-24">
         <div className="flex w-full">
           <div className="w-3/5 flex flex-col justify-center">
@@ -50,8 +72,7 @@ export default function Hero() {
                   </div>
 
                   <div className="flex flex-col items-center bg-primary text-white rounded-2xl py-2 text-[25px]">
-                    {reservations.length} <br />{" "}
-                    <span className="text-xs font-normal">Reservations</span>
+                    {reservations} <br /> <span className="text-xs font-normal">Reservations</span>
                   </div>
 
                   <div className="flex flex-col items-center bg-primary text-white rounded-2xl py-2 text-[25px]">

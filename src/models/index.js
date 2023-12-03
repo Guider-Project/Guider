@@ -90,6 +90,29 @@ const butTimeSchema = new mongoose.Schema({
   },
 });
 
+const reservationSchema = new mongoose.Schema({
+  busTime: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "BusTime",
+  },
+  seats: {
+    type: Number,
+    required: true,
+  },
+  userId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+    required: true,
+  },
+  remarks: {
+    type: String,
+  },
+  timestamp: {
+    type: Date,
+    default: Date.now,
+  },
+});
+
 const User = mongoose.models.User || mongoose.model("User", userSchema);
 module.exports.User = User;
 
@@ -98,3 +121,6 @@ module.exports.Bus = Bus;
 
 const BusTime = mongoose.models.BusTime || mongoose.model("BusTime", butTimeSchema);
 module.exports.BusTime = BusTime;
+
+const Reservation = mongoose.models.Reservation || mongoose.model("Reservation", reservationSchema);
+module.exports.Reservation = Reservation;

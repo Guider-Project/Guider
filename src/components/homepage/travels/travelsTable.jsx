@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect } from "react";
-import { Chip, Button } from "@nextui-org/react";
+import { Chip } from "@nextui-org/react";
 import { Table, TableHeader, TableColumn, TableBody, TableRow, TableCell } from "@nextui-org/react";
 
 const seatsColorMap = {
@@ -15,7 +15,9 @@ const statusColorMap = {
   false: "danger",
 };
 
-export default function TravelsTable({ schedule }) {
+export default function TravelsTable(props) {
+  const { schedule, onSelectSchedule } = props;
+
   const columns = [
     { name: "FROM", uid: "from" },
     { name: "TO", uid: "to" },
@@ -64,7 +66,11 @@ export default function TravelsTable({ schedule }) {
         case "actions":
           return (
             <div className="flex flex-row gap-2">
-              <button className="px-2 py-1 text-white bg-primary rounded-md">
+              <button
+                className="px-2 py-1 text-white bg-primary rounded-md"
+                onClick={() => onSelectSchedule(bus)}
+                disabled={!bus.available || bus.seats >= bus.maxSeats}
+              >
                 Make a reservation
               </button>
             </div>

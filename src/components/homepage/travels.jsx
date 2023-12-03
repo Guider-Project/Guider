@@ -3,14 +3,34 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { ToastContainer, toast } from "react-toastify";
-import { Card, CardBody } from "@nextui-org/react";
+import { Card, CardBody, useDisclosure } from "@nextui-org/react";
 
 import QuickReservation from "@/components/homepage/travels/quickReservation";
 import TravelsTable from "@/components/homepage/travels/travelsTable";
 
+import MakeReservationModal from "@/components/reservations/modals/makeReservationModal";
+
 export default function Travels() {
   const [schedule, setSchedule] = useState([]);
   const [nextBusSchedule, setNextBusSchedule] = useState([]);
+
+  const [update, setUpdate] = useState(false);
+  const toggleUpdate = () => setUpdate(!update);
+
+  useEffect(() => {
+    async function getBusses() {
+      try {
+        const { data } = await axios.get("/api/bus-times");
+        console.log(data);
+        setSchedule(data);
+      } catch (error) {
+        console.log(error);
+        toast.error("Error getting busses!");
+      }
+    }
+
+    getBusses();
+  }, []);
 
   useEffect(() => {
     async function getBusses() {
@@ -82,6 +102,20 @@ export default function Travels() {
     setNextBusSchedule(nextSchedules);
   }, [schedule]);
 
+  const [selectedSchedule, setSelectedSchedule] = useState(null);
+
+  const {
+    isOpen: isOpenMakeReservation,
+    onOpen: onOpenMakeReservation,
+    onClose: onCloseMakeReservation,
+    onOpenChange: onOpenChangeMakeReservation,
+  } = useDisclosure();
+
+  const handleSelectSchedule = (schedule) => {
+    setSelectedSchedule(schedule);
+    onOpenMakeReservation();
+  };
+
   return (
     <>
       <ToastContainer />
@@ -97,13 +131,25 @@ export default function Travels() {
               <div className="flex flex-col w-full justify-center gap-5">
                 <div className="text-[20px] font-bold w-full text-center">Upcoming Travels</div>
                 <div>
-                  <TravelsTable schedule={nextBusSchedule} />
+                  <TravelsTable
+                    schedule={nextBusSchedule}
+                    onSelectSchedule={handleSelectSchedule}
+                  />
                 </div>
               </div>
             </CardBody>
           </Card>
         </div>
       </div>
+
+      <MakeReservationModal
+        selectedSchedule={selectedSchedule}
+        isOpen={isOpenMakeReservation}
+        onOpenChange={onOpenChangeMakeReservation}
+        onClose={onCloseMakeReservation}
+        schedule={nextBusSchedule}
+        onUpdate={toggleUpdate}
+      />
     </>
   );
 }
