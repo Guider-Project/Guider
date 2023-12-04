@@ -71,7 +71,7 @@ export default function NewsContent() {
                   <span className="font-medium dark:text-white">{item.author}</span>
                 </div>
                 <a
-                  href="#"
+                  href={`/news/${item.id}`}
                   className="inline-flex items-center font-medium text-primary-600 dark:text-primary-500 hover:underline"
                 >
                   Read more
