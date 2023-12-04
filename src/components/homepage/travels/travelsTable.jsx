@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect } from "react";
-import { Chip } from "@nextui-org/react";
+import { Chip, Spinner } from "@nextui-org/react";
 import { Table, TableHeader, TableColumn, TableBody, TableRow, TableCell } from "@nextui-org/react";
 
 const seatsColorMap = {
@@ -16,7 +16,7 @@ const statusColorMap = {
 };
 
 export default function TravelsTable(props) {
-  const { schedule, onSelectSchedule } = props;
+  const { schedule, onSelectSchedule, loading } = props;
 
   const columns = [
     { name: "FROM", uid: "from" },
@@ -91,7 +91,12 @@ export default function TravelsTable(props) {
           </TableColumn>
         )}
       </TableHeader>
-      <TableBody items={schedule}>
+      <TableBody
+        className="min-h-[240px]"
+        items={schedule}
+        isLoading={loading}
+        loadingContent={<Spinner label="Loading..." />}
+      >
         {(item) => (
           <TableRow key={item._id}>
             {(columnKey) => <TableCell>{renderCell(item, columnKey)}</TableCell>}

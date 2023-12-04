@@ -19,7 +19,10 @@ export default function Travels() {
   const [update, setUpdate] = useState(false);
   const toggleUpdate = () => setUpdate(!update);
 
+  const [loading, setLoading] = useState(true);
+
   useEffect(() => {
+    setLoading(true);
     async function getBusses() {
       try {
         const { data } = await axios.get("/api/bus-times");
@@ -30,8 +33,10 @@ export default function Travels() {
       }
     }
 
+    setLoading(false);
+
     getBusses();
-  }, []);
+  }, [update]);
 
   useEffect(() => {
     async function getBusses() {
@@ -139,6 +144,7 @@ export default function Travels() {
                   <TravelsTable
                     schedule={nextBusSchedule}
                     onSelectSchedule={handleSelectSchedule}
+                    loading={loading}
                   />
                 </div>
               </div>
