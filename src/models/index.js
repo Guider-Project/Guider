@@ -125,6 +125,24 @@ const reservationSchema = new mongoose.Schema({
   },
 });
 
+const complainSchema = new mongoose.Schema({
+  name: {
+    type: String,
+    required: true,
+  },
+  phoneNumber: {
+    type: String,
+  },
+  description: {
+    type: String,
+    required: true,
+  },
+  timestamp: {
+    type: Date,
+    default: Date.now,
+  },
+});
+
 const User = mongoose.models.User || mongoose.model("User", userSchema);
 module.exports.User = User;
 
@@ -136,3 +154,6 @@ module.exports.BusTime = BusTime;
 
 const Reservation = mongoose.models.Reservation || mongoose.model("Reservation", reservationSchema);
 module.exports.Reservation = Reservation;
+
+const Complain = mongoose.models.Complain || mongoose.model("Complain", complainSchema);
+module.exports.Complain = Complain;
