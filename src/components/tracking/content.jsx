@@ -10,7 +10,7 @@ export default function TrackingContent() {
 
   return (
     <>
-      <div className="w-full p-24 h-[800px]">
+      <div className="w-full py-5 px-5 h-[800px]">
         <MapContainer
           center={{ lat: 6.82177958831233, lng: 80.04256172705482 }}
           zoom={60}
